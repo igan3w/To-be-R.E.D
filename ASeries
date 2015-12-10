@@ -49,6 +49,9 @@ Returns: 3
 Returns: 3 
 -10,-10,-10 is an arithmetic series.
  */
+ 
+ 
+ 
 package ASeries;
 
 import java.io.BufferedReader;
