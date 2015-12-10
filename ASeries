@@ -1,0 +1,140 @@
+/*
+ Problem Statement
+
+*** You may only submit a given problem once - no resubmissions will be accepted. ***
+
+ An arithmetic series consists of a sequence of terms such that each term minus 
+ its immediate predecessor gives the same result. 
+ For example, the sequence 3,7,11,15 is the terms of the arithmetic series 3+7+11+15;
+ each term minus its predecessor equals 4. (Of course there is no requirement on the 
+ first term since it has no predecessor.) 
+ Given a collection of integers, we want to find the longest arithmetic series that 
+ can be formed by choosing a sub-collection (possibly the entire collection). 
+ Create a class ASeries that contains a method longest that is given a values 
+ and returns the length of the longest arithmetic series that can be formed from values. 
+
+Definition
+Class : ASeries
+Method : longest
+Parameters : int[]
+Returns : int
+Method signature : int longest(int[] values)
+				  (be sure your method is public)
+
+Limits
+Time limit (s):840.000
+Memory limit (MB):64
+   
+Constraints
+ - values will contain between 2 and 50 elements inclusive.
+ - Each element of values will be between -1,000,000 and 1,000,000 inclusive.  
+ 
+Examples
+
+ 0) 
+ 
+{3,8,4,5,6,2,2}
+Returns: 5
+No arithmetic series using these values is longer than 2,3,4,5,6. 
+  
+ 1) 
+ 
+{-1,-5,1,3}
+Returns: 3 
+-1, 1, 3 is an arithmetic series (so is 3,-1,-5).
+  
+ 2) 
+ 
+{-10,-20,-10,-10}
+Returns: 3 
+-10,-10,-10 is an arithmetic series.
+ */
+package ASeries;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+public class ASeries {
+	public static void main(String[] args) throws IOException{
+		FileReader in=null;
+		BufferedReader reader=null;
+		try{
+			in=new FileReader("aseries.txt");
+			reader=new BufferedReader(in);
+			
+			String str="";
+			while((str=reader.readLine())!=null)
+			{
+				StringTokenizer token=new StringTokenizer(str,",{} ");
+				ArrayList<Integer> arr=new ArrayList<>();
+				while(token.hasMoreTokens()){
+					arr.add(Integer.parseInt(token.nextToken()));
+				}
+				int[] values=new int[arr.size()];
+				for(int i=0;i<arr.size();i++)
+					values[i]=arr.get(i);
+				System.out.println(longest(values));
+			}
+			
+		}catch(FileNotFoundException e)
+		{
+			e.getMessage();
+		}finally{
+			in.close();
+			reader.close();
+		}
+	}
+
+	public static int longest(int[] values) {
+		quick_sort(values, 0, values.length - 1);
+
+		int dif = values[values.length - 1] - values[0];
+		int max=0;
+
+		for (int d = 0; d <= dif; d++) { // 시작값에 증가비율을 설정
+			for (int i = 0; i < values.length; i++) {
+				int cmp=values[i];
+				int count=1;
+				for(int j=i+1;j<values.length;j++){
+					cmp=cmp+d;
+					if(cmp==values[j]){
+						count++;
+					}
+					else
+						break;
+				}
+				if(count>max)
+					max=count;
+			}
+		}
+
+		return max;
+	}
+	//재귀를 활용한 퀵 정렬
+	private static void quick_sort(int[] values,int left,int right) {
+		int t, pivot;
+		int i = left - 1, j = right + 1;
+		pivot = (left + right) / 2;
+		if (left < right) {
+			while (left < right) {
+				while (values[++i] < values[pivot])
+					;
+				while (values[--j] > values[pivot])
+					;
+
+				if (i >= j)
+					break;
+
+				t = values[i];
+				values[i] = values[j];
+				values[j] = t;
+			}
+			quick_sort(values, left, i - 1);
+			quick_sort(values, j + 1, right);
+		}
+	}
+}
